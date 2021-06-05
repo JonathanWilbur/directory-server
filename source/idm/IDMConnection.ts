@@ -5,9 +5,9 @@ import IDMSegmentField from "./IDMSegmentField";
 import IDMSegment from "./IDMSegment";
 // import * as x500 from "x500-ts";
 import { BERElement } from "asn1-ts";
-import { IDM_PDU, _decode_IDM_PDU } from "x500-ts/dist/node/modules/IDMProtocolSpecification/IDM-PDU.ta";
-// import type { IdmBind } from "x500-ts/dist/node/modules/IDMProtocolSpecification/IdmBind.ta";
-// import { dap_ip } from "x500-ts/dist/node/modules/DirectoryIDMProtocols/dap-ip.oa";
+import { IDM_PDU, _decode_IDM_PDU } from "@wildboar/x500/src/lib/modules/IDMProtocolSpecification/IDM-PDU.ta";
+// import type { IdmBind } from "@wildboar/x500/src/lib/modules/modules/IDMProtocolSpecification/IdmBind.ta";
+// import { dap_ip } from "@wildboar/x500/src/lib/modules/modules/DirectoryIDMProtocols/dap-ip.oa";
 import { EventEmitter } from "events";
 import type IDMEventEmitter from "./IDMEventEmitter";
 

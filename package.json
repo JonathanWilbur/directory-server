@@ -16,6 +16,7 @@
         "@babel/preset-typescript": "^7.12.1",
         "@types/benchmark": "^2.1.0",
         "@types/node": "^14.14.8",
+        "@types/uuid": "^8.3.0",
         "@typescript-eslint/eslint-plugin": "^4.8.1",
         "@typescript-eslint/parser": "^4.8.1",
         "babel-jest": "^26.6.3",
@@ -68,8 +69,10 @@
     "version": "0.1.0",
     "dependencies": {
         "@types/mongodb": "^3.5.33",
+        "@wildboar/x500": "^1.0.1",
         "asn1-ts": "^5.0.0",
         "mongodb": "^3.6.3",
+        "uuid": "^8.3.2",
         "x500-ts": "^3.0.0"
     }
 }

@@ -316,3 +316,5 @@ rules:
   # Turned off because some parts of the NodeJS library still use `object`, which is banned by default.
   '@typescript-eslint/ban-types':
     - off
+  '@typescript-eslint/no-non-null-assertion':
+    - off

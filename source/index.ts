@@ -1,5 +1,6 @@
+import { Context } from "./types";
 import * as net from "net";
-import { IdmBind } from "x500-ts/dist/node/modules/IDMProtocolSpecification/IdmBind.ta";
+import { IdmBind } from "@wildboar/x500/src/lib/modules/IDMProtocolSpecification/IdmBind.ta";
 // import { v4 as uuidv4 } from "uuid";
 // import ono from "@jsdevtools/ono";
 // import moment from "moment";
@@ -8,13 +9,17 @@ import { IdmBind } from "x500-ts/dist/node/modules/IDMProtocolSpecification/IdmB
 // import osLocale from "os-locale";
 // import isDebugging from "is-debugging";
 import IDMConnection from "./idm/IDMConnection";
-import { dap_ip } from "x500-ts/dist/node/modules/DirectoryIDMProtocols/dap-ip.oa";
+import { dap_ip } from "@wildboar/x500/src/lib/modules/DirectoryIDMProtocols/dap-ip.oa";
 import DAPConnection from "./dap/DAPConnection";
 import {
     // DirectoryBindArgument,
     _decode_DirectoryBindArgument,
-} from "x500-ts/dist/node/modules/DirectoryAbstractService/DirectoryBindArgument.ta";
-// import type { Request } from "x500-ts/dist/node/modules/IDMProtocolSpecification/Request.ta";
+} from "@wildboar/x500/src/lib/modules/DirectoryAbstractService/DirectoryBindArgument.ta";
+// import type { Request } from "@wildboar/x500/src/lib/modules/modules/IDMProtocolSpecification/Request.ta";
+import objectClassFromInformationObject from "./x500/objectClassFromInformationObject";
+import {
+    top,
+} from "@wildboar/x500/src/lib/modules/InformationFramework/top.oa";
 
 export default
 async function main (): Promise<void> {
@@ -22,6 +27,22 @@ async function main (): Promise<void> {
         console.log("Not main.");
         process.exit(1);
     }
+    const ctx: Context = {
+        log: console,
+        database: {
+            data: {
+                entries: new Map([]), // FIXME: Add root DSE
+                values: [],
+            },
+        },
+        structuralObjectClassHierarchy: {
+            ...objectClassFromInformationObject(top),
+            parent: undefined,
+            children: [],
+        },
+        objectClasses: new Map([]),
+        attributes: new Map([]),
+    };
     const server = net.createServer((c) => {
         console.log("client connected");
         const idm = new IDMConnection(c); // eslint-disable-line
@@ -30,7 +51,7 @@ async function main (): Promise<void> {
         idm.events.on("bind", (idmBind: IdmBind) => {
             if (idmBind.protocolID.toString() === dap_ip["&id"]?.toString()) {
                 const dba = _decode_DirectoryBindArgument(idmBind.argument);
-                new DAPConnection(idm, dba); // eslint-disable-line
+                new DAPConnection(ctx, idm, dba); // eslint-disable-line
             } else {
                 console.log(`Unsupported protocol: ${idmBind.protocolID.toString()}.`);
             }

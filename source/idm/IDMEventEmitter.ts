@@ -1,14 +1,14 @@
-import type { IdmBind } from "x500-ts/dist/node/modules/IDMProtocolSpecification/IdmBind.ta";
-import type { IdmBindResult } from "x500-ts/dist/node/modules/IDMProtocolSpecification/IdmBindResult.ta";
-import type { IdmBindError } from "x500-ts/dist/node/modules/IDMProtocolSpecification/IdmBindError.ta";
-import type { Request } from "x500-ts/dist/node/modules/IDMProtocolSpecification/Request.ta";
-import type { IdmResult } from "x500-ts/dist/node/modules/IDMProtocolSpecification/IdmResult.ta";
-import type { Error } from "x500-ts/dist/node/modules/IDMProtocolSpecification/Error.ta";
-import type { IdmReject } from "x500-ts/dist/node/modules/IDMProtocolSpecification/IdmReject.ta";
-import type { Unbind } from "x500-ts/dist/node/modules/IDMProtocolSpecification/Unbind.ta";
-import type { Abort } from "x500-ts/dist/node/modules/IDMProtocolSpecification/Abort.ta";
-import type { StartTLS } from "x500-ts/dist/node/modules/IDMProtocolSpecification/StartTLS.ta";
-import type { TLSResponse } from "x500-ts/dist/node/modules/IDMProtocolSpecification/TLSResponse.ta";
+import type { IdmBind } from "@wildboar/x500/src/lib/modules/IDMProtocolSpecification/IdmBind.ta";
+import type { IdmBindResult } from "@wildboar/x500/src/lib/modules/IDMProtocolSpecification/IdmBindResult.ta";
+import type { IdmBindError } from "@wildboar/x500/src/lib/modules/IDMProtocolSpecification/IdmBindError.ta";
+import type { Request } from "@wildboar/x500/src/lib/modules/IDMProtocolSpecification/Request.ta";
+import type { IdmResult } from "@wildboar/x500/src/lib/modules/IDMProtocolSpecification/IdmResult.ta";
+import type { Error } from "@wildboar/x500/src/lib/modules/IDMProtocolSpecification/Error.ta";
+import type { IdmReject } from "@wildboar/x500/src/lib/modules/IDMProtocolSpecification/IdmReject.ta";
+import type { Unbind } from "@wildboar/x500/src/lib/modules/IDMProtocolSpecification/Unbind.ta";
+import type { Abort } from "@wildboar/x500/src/lib/modules/IDMProtocolSpecification/Abort.ta";
+import type { StartTLS } from "@wildboar/x500/src/lib/modules/IDMProtocolSpecification/StartTLS.ta";
+import type { TLSResponse } from "@wildboar/x500/src/lib/modules/IDMProtocolSpecification/TLSResponse.ta";
 
 type EventMap = Record<string, any>;
 
