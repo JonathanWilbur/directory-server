@@ -1,17 +1,18 @@
 import * as net from "net";
-// import * as stream from "stream";
 import IDMVersion from "./IDMVersion";
 import IDMSegmentField from "./IDMSegmentField";
 import IDMSegment from "./IDMSegment";
-// import * as x500 from "x500-ts";
-import { BERElement } from "asn1-ts";
+import { BERElement, ASN1Element, INTEGER } from "asn1-ts";
 import { IDM_PDU, _decode_IDM_PDU } from "@wildboar/x500/src/lib/modules/IDMProtocolSpecification/IDM-PDU.ta";
-// import type { IdmBind } from "@wildboar/x500/src/lib/modules/modules/IDMProtocolSpecification/IdmBind.ta";
-// import { dap_ip } from "@wildboar/x500/src/lib/modules/modules/DirectoryIDMProtocols/dap-ip.oa";
+import { Error as IDMError, _encode_Error } from "@wildboar/x500/src/lib/modules/IDMProtocolSpecification/Error.ta";
+import { IdmReject, _encode_IdmReject } from "@wildboar/x500/src/lib/modules/IDMProtocolSpecification/IdmReject.ta";
+import { Abort, _encode_Abort } from "@wildboar/x500/src/lib/modules/IDMProtocolSpecification/Abort.ta";
+import type { IdmReject_reason } from "@wildboar/x500/src/lib/modules/IDMProtocolSpecification/IdmReject-reason.ta";
 import { EventEmitter } from "events";
 import type IDMEventEmitter from "./IDMEventEmitter";
 
 // NOTE: It does not seem to clearly state what the code for version 2 is.
+// TODO: Check for reused invoke IDs.
 
 export default
 class IDMConnection {
@@ -167,5 +168,54 @@ class IDMConnection {
         // } else {
         //     console.log("Unrecognized IDM packet type.");
         // }
+    }
+
+    public write (data: Uint8Array, encodings: number): void {
+        const header = ((): Buffer => {
+            switch (this.version) {
+            case (IDMVersion.v1): {
+                const VERSION_V1_BYTE: number = 0x01;
+                const FINAL_BYTE: number = 0x01; // FIXME: Support larger responses.
+                const ret = Buffer.alloc(6);
+                ret.writeInt8(VERSION_V1_BYTE, 0);
+                ret.writeInt8(FINAL_BYTE, 1);
+                ret.writeInt32BE(data.length, 2);
+                return ret;
+            }
+            case (IDMVersion.v2): {
+                const VERSION_V2_BYTE: number = 0x02;
+                const FINAL_BYTE: number = 0x01; // FIXME: Support larger responses.
+                const ret = Buffer.alloc(7);
+                ret.writeInt8(VERSION_V2_BYTE, 0);
+                ret.writeInt8(FINAL_BYTE, 1);
+                ret.writeInt16BE(encodings, 2);
+                ret.writeInt32BE(data.length, 4);
+                return ret;
+            }
+            default: {
+                throw new Error();
+            }
+            }
+        })();
+        this.socket.write(Buffer.concat([
+            header,
+            data,
+        ]));
+    }
+
+    public async writeError (invokeId: INTEGER, errcode: ASN1Element, error: ASN1Element): Promise<void> {
+        const idmerr = new IDMError(invokeId, errcode, error);
+        const result = _encode_Error(idmerr, () => new BERElement());
+        this.write(result.toBytes(), 0);
+    }
+
+    public async writeReject (invokeID: INTEGER, reason: IdmReject_reason): Promise<void> {
+        const rej = _encode_IdmReject(new IdmReject(invokeID, reason), () => new BERElement());
+        this.write(rej.toBytes(), 0);
+    }
+
+    public async writeAbort (abort: Abort): Promise<void> {
+        const a = _encode_Abort(abort, () => new BERElement());
+        this.write(a.toBytes(), 0);
     }
 }

@@ -1,5 +1,4 @@
-import { Context, IndexableOID, StoredAttributeValueWithContexts, StoredContext } from "../../types";
-import DAPConnection from "../DAPConnection";
+import { Context, IndexableOID, StoredAttributeValueWithContexts, StoredContext, Entry } from "../../types";
 import {
     AddEntryArgumentData,
 } from "@wildboar/x500/src/lib/modules/DirectoryAbstractService/AddEntryArgumentData.ta";
@@ -178,7 +177,6 @@ function unrecognizedAttributeErrorData (
 export
 async function addEntry (
     ctx: Context,
-    connection: DAPConnection,
     data: AddEntryArgumentData,
 ): Promise<AddEntryResult> {
     if (data.object.rdnSequence.length === 0) {
@@ -439,9 +437,17 @@ of the ancestor. Otherwise, the Directory shall return an Update Error with prob
         );
     }
 
+    const newEntry: Entry = {
+        id: entry,
+        dn: entryDN,
+        parent: superior.id,
+    };
+    ctx.database.data.entries.set(entry, newEntry);
     ctx.database.data.values.push(...attrsFromDN, ...attrs);
     console.log(ctx.database.data);
     return {
         null_: null,
     };
 }
+
+export default addEntry;

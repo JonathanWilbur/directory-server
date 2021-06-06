@@ -102,6 +102,7 @@ export
 interface Entry {
     id: UUID;
     dn: string;
+    parent?: UUID;
 }
 
 export
